@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter/gestures.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:mp_chart/mp/controller/controller.dart';
 import 'package:mp_chart/mp/core/utils/color_utils.dart';
@@ -71,57 +72,76 @@ abstract class ChartState<T extends Chart> extends State<T> {
     widget.controller.initialPainter();
     updatePainter();
     return Screenshot(
-        controller: _screenshotController,
-        child: Container(
-            decoration: BoxDecoration(color: ColorUtils.WHITE),
-            child: Stack(
-                // Center is a layout widget. It takes a single child and positions it
-                // in the middle of the parent.
-                children: [
-                  ConstrainedBox(
-                      constraints: BoxConstraints(
-                          minHeight: double.infinity,
-                          minWidth: double.infinity),
-                      child: OptimizedGestureDetector(
-                          tapDown: (details) {
-                            onTapDown(details);
-                          },
-                          singleTapUp: (details) {
-                            onSingleTapUp(details);
-                          },
-                          doubleTapUp: (details) {
-                            onDoubleTapUp(details);
-                          },
-                          moveStart: (details) {
-                            onMoveStart(details);
-                          },
-                          moveUpdate: (details) {
-                            onMoveUpdate(details);
-                          },
-                          moveEnd: (details) {
-                            onMoveEnd(details);
-                          },
-                          scaleStart: (details) {
-                            onScaleStart(details);
-                          },
-                          scaleUpdate: (details) {
-                            onScaleUpdate(details);
-                          },
-                          scaleEnd: (details) {
-                            onScaleEnd(details);
-                          },
-                          dragStart: (details){
-                            onDragStart(details);
-                          },
-                          dragUpdate: (details){
-                            onDragUpdate(details);
-                          },
-                          dragEnd: (details){
-                            onDragEnd(details);
-                          },
-                          child:
-                              CustomPaint(painter: widget.controller.painter))),
-                ])));
+      controller: _screenshotController,
+      child: Container(
+        decoration: BoxDecoration(color: ColorUtils.WHITE),
+        child: Stack(
+          // Center is a layout widget. It takes a single child and positions it
+          // in the middle of the parent.
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: double.infinity,
+                minWidth: double.infinity,
+              ),
+              child: MouseRegion(
+                onEnter: onPointerEnter,
+                onHover: onPointerHover,
+                onExit: onPointerExit,
+                child: Listener(
+                  onPointerSignal: (event) {
+                    if (event is PointerScrollEvent) {
+                      onPointerScroll(event);
+                    }
+                  },
+                  child: OptimizedGestureDetector(
+                    tapDown: (details) {
+                      onTapDown(details);
+                    },
+                    singleTapUp: (details) {
+                      onSingleTapUp(details);
+                    },
+                    doubleTapUp: (details) {
+                      onDoubleTapUp(details);
+                    },
+                    moveStart: (details) {
+                      onMoveStart(details);
+                    },
+                    moveUpdate: (details) {
+                      onMoveUpdate(details);
+                    },
+                    moveEnd: (details) {
+                      onMoveEnd(details);
+                    },
+                    scaleStart: (details) {
+                      onScaleStart(details);
+                    },
+                    scaleUpdate: (details) {
+                      onScaleUpdate(details);
+                    },
+                    scaleEnd: (details) {
+                      onScaleEnd(details);
+                    },
+                    dragStart: (details) {
+                      onDragStart(details);
+                    },
+                    dragUpdate: (details) {
+                      onDragUpdate(details);
+                    },
+                    dragEnd: (details) {
+                      onDragEnd(details);
+                    },
+                    child: CustomPaint(
+                      painter: widget.controller.painter,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -154,4 +174,12 @@ abstract class ChartState<T extends Chart> extends State<T> {
   void onDragUpdate(LongPressMoveUpdateDetails details);
 
   void onDragEnd(LongPressEndDetails details);
+
+  void onPointerScroll(PointerScrollEvent event);
+
+  void onPointerEnter(PointerEnterEvent event);
+
+  void onPointerHover(PointerHoverEvent event);
+
+  void onPointerExit(PointerExitEvent event);
 }

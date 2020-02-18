@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter/gestures.dart';
 import 'package:mp_chart/mp/chart/bar_line_scatter_candle_bubble_chart.dart';
 import 'package:mp_chart/mp/chart/chart.dart';
 import 'package:mp_chart/mp/controller/combined_chart_controller.dart';
@@ -6,6 +7,7 @@ import 'package:mp_chart/mp/core/data_interfaces/i_data_set.dart';
 import 'package:mp_chart/mp/core/highlight/highlight.dart';
 import 'package:mp_chart/mp/core/poolable/point.dart';
 import 'package:mp_chart/mp/core/touch_listener.dart';
+import 'package:mp_chart/mp/core/pointer_listener.dart';
 import 'package:mp_chart/mp/core/utils/highlight_utils.dart';
 import 'package:mp_chart/mp/core/utils/utils.dart';
 import 'package:optimized_gesture_detector/details.dart';
@@ -39,6 +41,17 @@ class CombinedChartState extends ChartState<CombinedChart> {
     if (type == TouchValueType.CHART) {
       return _getTrans(localX, localY);
     } else if (type == TouchValueType.SCREEN) {
+      return MPPointF.getInstance1(screenX, screenY);
+    } else {
+      return MPPointF.getInstance1(localX, localY);
+    }
+  }
+
+  MPPointF _getPointerValue(PointerValueType type, double screenX,
+      double screenY, double localX, localY) {
+    if (type == PointerValueType.CHART) {
+      return _getTrans(localX, localY);
+    } else if (type == PointerValueType.SCREEN) {
       return MPPointF.getInstance1(screenX, screenY);
     } else {
       return MPPointF.getInstance1(localX, localY);
@@ -356,6 +369,71 @@ class CombinedChartState extends ChartState<CombinedChart> {
           details.localPosition.dx,
           details.localPosition.dy);
       widget.controller.touchEventListener.onDragEnd(point.x, point.y);
+    }
+  }
+
+  @override
+  void onPointerScroll(PointerScrollEvent event) {
+    if (widget.controller.pointerEventListener != null) {
+      var point = _getPointerValue(
+          widget.controller.pointerEventListener.valueType(),
+          event.position.dx,
+          event.position.dy,
+          event.localPosition.dx,
+          event.localPosition.dy);
+      widget.controller.pointerEventListener.onWheelScroll(
+        point.x,
+        point.y,
+        event.scrollDelta,
+      );
+    }
+  }
+
+  @override
+  void onPointerEnter(PointerEnterEvent event) {
+    if (widget.controller.pointerEventListener != null) {
+      var point = _getPointerValue(
+          widget.controller.pointerEventListener.valueType(),
+          event.position.dx,
+          event.position.dy,
+          event.localPosition.dx,
+          event.localPosition.dy);
+      widget.controller.pointerEventListener.onEnter(
+        point.x,
+        point.y,
+      );
+    }
+  }
+
+  @override
+  void onPointerHover(PointerHoverEvent event) {
+    if (widget.controller.pointerEventListener != null) {
+      var point = _getPointerValue(
+          widget.controller.pointerEventListener.valueType(),
+          event.position.dx,
+          event.position.dy,
+          event.localPosition.dx,
+          event.localPosition.dy);
+      widget.controller.pointerEventListener.onHover(
+        point.x,
+        point.y,
+      );
+    }
+  }
+
+  @override
+  void onPointerExit(PointerExitEvent event) {
+    if (widget.controller.pointerEventListener != null) {
+      var point = _getPointerValue(
+          widget.controller.pointerEventListener.valueType(),
+          event.position.dx,
+          event.position.dy,
+          event.localPosition.dx,
+          event.localPosition.dy);
+      widget.controller.pointerEventListener.onExit(
+        point.x,
+        point.y,
+      );
     }
   }
 }

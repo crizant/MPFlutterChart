@@ -23,6 +23,7 @@ import 'package:mp_chart/mp/core/highlight/highlight.dart';
 import 'package:mp_chart/mp/core/image_loader.dart';
 import 'package:mp_chart/mp/core/touch_listener.dart';
 import 'package:mp_chart/mp/core/chart_trans_listener.dart';
+import 'package:mp_chart/mp/core/pointer_listener.dart';
 import 'package:mp_chart/mp/core/utils/color_utils.dart';
 import 'package:mp_chart/mp/core/value_formatter/day_axis_value_formatter.dart';
 import 'package:mp_chart/mp/core/value_formatter/my_value_formatter.dart';
@@ -137,56 +138,58 @@ class BarChartBasicState extends BarActionState<BarChartBasic>
   void _initController() {
     var desc = Description()..enabled = false;
     controller = BarChartController(
-        chartTransListener: MyChartTransListener(),
-        axisLeftSettingFunction: (axisLeft, controller) {
-          axisLeft
-            ..setLabelCount2(8, false)
-            ..typeface = Util.LIGHT
-            ..setValueFormatter(MyValueFormatter("\$"))
-            ..position = YAxisLabelPosition.OUTSIDE_CHART
-            ..spacePercentTop = 15
-            ..setAxisMinimum(0);
-        },
-        axisRightSettingFunction: (axisRight, controller) {
-          axisRight
-            ..drawGridLines = false
-            ..typeface = Util.LIGHT
-            ..setLabelCount2(8, false)
-            ..setValueFormatter(MyValueFormatter("\$"))
-            ..spacePercentTop = 15
-            ..setAxisMinimum(0);
-        },
-        legendSettingFunction: (legend, controller) {
-          legend
-            ..verticalAlignment = LegendVerticalAlignment.BOTTOM
-            ..orientation = LegendOrientation.HORIZONTAL
-            ..drawInside = false
-            ..shape = LegendForm.SQUARE
-            ..formSize = 9
-            ..textSize = 11
-            ..xEntrySpace = 4;
-        },
-        xAxisSettingFunction: (xAxis, controller) {
-          xAxis
-            ..typeface = Util.LIGHT
-            ..position = XAxisPosition.BOTTOM
-            ..drawGridLines = false
-            ..setGranularity(1.0)
-            ..setLabelCount1(7)
-            ..setValueFormatter(DayAxisValueFormatter(controller));
-        },
-        selectionListener: this,
-        drawBarShadow: false,
-        drawValueAboveBar: true,
-        drawGridBackground: false,
-        dragXEnabled: true,
-        dragYEnabled: true,
-        scaleXEnabled: true,
-        scaleYEnabled: true,
-        pinchZoomEnabled: false,
-        maxVisibleCount: 60,
-        description: desc,
-        touchEventListener: MyTouchEventListener());
+      chartTransListener: MyChartTransListener(),
+      axisLeftSettingFunction: (axisLeft, controller) {
+        axisLeft
+          ..setLabelCount2(8, false)
+          ..typeface = Util.LIGHT
+          ..setValueFormatter(MyValueFormatter("\$"))
+          ..position = YAxisLabelPosition.OUTSIDE_CHART
+          ..spacePercentTop = 15
+          ..setAxisMinimum(0);
+      },
+      axisRightSettingFunction: (axisRight, controller) {
+        axisRight
+          ..drawGridLines = false
+          ..typeface = Util.LIGHT
+          ..setLabelCount2(8, false)
+          ..setValueFormatter(MyValueFormatter("\$"))
+          ..spacePercentTop = 15
+          ..setAxisMinimum(0);
+      },
+      legendSettingFunction: (legend, controller) {
+        legend
+          ..verticalAlignment = LegendVerticalAlignment.BOTTOM
+          ..orientation = LegendOrientation.HORIZONTAL
+          ..drawInside = false
+          ..shape = LegendForm.SQUARE
+          ..formSize = 9
+          ..textSize = 11
+          ..xEntrySpace = 4;
+      },
+      xAxisSettingFunction: (xAxis, controller) {
+        xAxis
+          ..typeface = Util.LIGHT
+          ..position = XAxisPosition.BOTTOM
+          ..drawGridLines = false
+          ..setGranularity(1.0)
+          ..setLabelCount1(7)
+          ..setValueFormatter(DayAxisValueFormatter(controller));
+      },
+      selectionListener: this,
+      drawBarShadow: false,
+      drawValueAboveBar: true,
+      drawGridBackground: false,
+      dragXEnabled: true,
+      dragYEnabled: true,
+      scaleXEnabled: true,
+      scaleYEnabled: true,
+      pinchZoomEnabled: false,
+      maxVisibleCount: 60,
+      description: desc,
+      touchEventListener: MyTouchEventListener(),
+      pointerEventListener: MyPointerEventListener(),
+    );
   }
 
   void _initData(int count, double range, ui.Image img) {
@@ -271,7 +274,7 @@ class BarChartBasicState extends BarActionState<BarChartBasic>
   }
 }
 
-class MyChartTransListener with ChartTransListener{
+class MyChartTransListener with ChartTransListener {
   @override
   void scale(double scaleX, double scaleY, double x, double y) {
     print("scale scaleX: $scaleX, scaleY: $scaleY, x: $x, y: $y");
@@ -281,7 +284,6 @@ class MyChartTransListener with ChartTransListener{
   void translate(double dx, double dy) {
     print("translate dx: $dx, dy: $dy");
   }
-
 }
 
 class MyTouchEventListener with OnTouchEventListener {
@@ -348,5 +350,32 @@ class MyTouchEventListener with OnTouchEventListener {
   @override
   void onDragUpdate(double x, double y) {
     print("onDragUpdate x: $x, y: $y");
+  }
+}
+
+class MyPointerEventListener with OnPointerEventListener {
+  @override
+  PointerValueType valueType() {
+    return PointerValueType.SCREEN;
+  }
+
+  @override
+  void onWheelScroll(double x, double y, Offset scrollDelta) {
+    print("onWheelScroll x: $x, y: $y, scrollDelta: $scrollDelta");
+  }
+
+  @override
+  void onEnter(double x, double y) {
+    print('onEnter: x: $x, y: $y');
+  }
+
+  @override
+  void onHover(double x, double y) {
+    print('onHover: x: $x, y: $y');
+  }
+
+  @override
+  void onExit(double x, double y) {
+    print('onExit: x: $x, y: $y');
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter/gestures.dart';
 import 'package:mp_chart/mp/chart/chart.dart';
 import 'package:mp_chart/mp/controller/pie_radar_controller.dart';
 import 'package:mp_chart/mp/core/highlight/highlight.dart';
@@ -89,6 +90,18 @@ abstract class PieRadarChartState<T extends PieRadarChart>
   void onDragUpdate(LongPressMoveUpdateDetails details) {}
 
   void onDragEnd(LongPressEndDetails details) {}
+
+  @override
+  void onPointerScroll(PointerScrollEvent event) {}
+
+  @override
+  void onPointerEnter(PointerEnterEvent event) {}
+
+  @override
+  void onPointerHover(PointerHoverEvent event) {}
+
+  @override
+  void onPointerExit(PointerExitEvent event) {}
 
   @override
   void updatePainter() {

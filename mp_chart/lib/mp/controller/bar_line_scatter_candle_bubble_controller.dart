@@ -12,6 +12,7 @@ import 'package:mp_chart/mp/core/render/x_axis_renderer.dart';
 import 'package:mp_chart/mp/core/render/y_axis_renderer.dart';
 import 'package:mp_chart/mp/core/touch_listener.dart';
 import 'package:mp_chart/mp/core/chart_trans_listener.dart';
+import 'package:mp_chart/mp/core/pointer_listener.dart';
 import 'package:mp_chart/mp/core/transformer/transformer.dart';
 import 'package:mp_chart/mp/core/utils/color_utils.dart';
 import 'package:mp_chart/mp/core/utils/utils.dart';
@@ -58,6 +59,9 @@ abstract class BarLineScatterCandleBubbleController<
 
   /// this is used for have a callback when chart translate or scale
   ChartTransListener chartTransListener;
+
+  // this is used for user to listen pointer events
+  OnPointerEventListener pointerEventListener;
 
   AxisLeftSettingFunction axisLeftSettingFunction;
   AxisRightSettingFunction axisRightSettingFunction;
@@ -108,6 +112,7 @@ abstract class BarLineScatterCandleBubbleController<
       this.axisRightSettingFunction,
       this.touchEventListener,
       this.chartTransListener,
+      this.pointerEventListener,
       IMarker marker,
       Description description,
       String noDataText = "No chart data available.",
